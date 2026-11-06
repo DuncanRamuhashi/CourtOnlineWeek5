@@ -1,0 +1,86 @@
+﻿﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Case Management</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css">
+</head>
+
+<body class="bg-light min-vh-100 d-flex flex-column">
+
+   
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+            <div class="container">
+
+                <a class="navbar-brand fw-bold" href="/">
+                    Case Management
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                        aria-controls="navbarNav"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+
+                    <ul class="navbar-nav ms-auto">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                Home
+                            </a>
+                        </li>
+
+
+
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+   
+    <main class="container flex-grow-1 py-5">
+
+        <div class="mb-4 pb-3 border-bottom">
+            @RenderSection("title", required: false)
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4">
+                @RenderBody()
+            </div>
+        </div>
+
+    </main>
+
+    
+    <footer class="bg-dark text-white-50 py-3 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">
+                &copy; @DateTime.Now.Year Court Management System
+                <span class="mx-2">|</span>
+                All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
