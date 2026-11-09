@@ -1,0 +1,204 @@
+
+@model CourtOnlineWeek5.Models.Judge
+@{
+    ViewData["Title"] = "Register Judge";
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-outline-dark btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to Judges
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-person-badge me-2"></i>Register Judge
+        </h2>
+        <p class="text-muted mb-0">
+            Register a judge and assign their primary court within the court management system.
+        </p>
+    </div>
+
+    <!-- Registration Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <div class="card-header bg-white border-bottom py-3 px-4">
+            <h5 class="fw-bold text-dark mb-1">
+                Judge Information
+            </h5>
+            <small class="text-muted">
+                Enter the judge's professional, contact and appointment details.
+            </small>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Professional Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-person-vcard me-2"></i>Professional Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label asp-for="Id" class="form-label fw-semibold">
+                                Judge ID <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Id" class="form-control" placeholder="e.g. JDG-013" />
+                            <span asp-validation-for="Id" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter judge's full name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Title" class="form-label fw-semibold">
+                                Judicial Title
+                            </label>
+                            <select asp-for="Title" class="form-select">
+                                <option value="">Select Title</option>
+                                <option>Judge</option>
+                                <option>Acting Judge</option>
+                                <option>Magistrate</option>
+                            </select>
+                            <span asp-validation-for="Title" class="text-danger small"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle my-4" />
+
+                <!-- Court Assignment -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-building me-2"></i>Court Assignment
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="CourtId" class="form-label fw-semibold">
+                                Primary Court
+                            </label>
+
+                            <select asp-for="CourtId" class="form-select">
+                                <option value="">Select Primary Court</option>
+
+                                @foreach (var court in ViewBag.Courts)
+                                {
+                                    <option value="@court.Id">@court.Name</option>
+                                }
+                            </select>
+
+                            <span asp-validation-for="CourtId" class="text-danger small"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle my-4" />
+
+                <!-- Contact Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-telephone me-2"></i>Contact Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                Email Address
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label fw-semibold">
+                                Phone Number
+                            </label>
+                            <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle my-4" />
+
+                <!-- Appointment Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-calendar-check me-2"></i>Appointment Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label asp-for="AppointmentDate" class="form-label fw-semibold">
+                                Appointment Date
+                            </label>
+                            <input asp-for="AppointmentDate" type="date" class="form-control" />
+                            <span asp-validation-for="AppointmentDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold d-block">
+                                Account Status
+                            </label>
+
+                            <div class="bg-light border rounded-3 p-3">
+                                <div class="form-check">
+                                    <input asp-for="IsActive" class="form-check-input" checked />
+                                    <label asp-for="IsActive" class="form-check-label fw-semibold">
+                                        Active
+                                    </label>
+                                </div>
+                                <small class="text-muted ms-4">
+                                    Indicates whether the judge is currently active.
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-end gap-2 border-top pt-4">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-dark px-4">
+                        <i class="bi bi-check-circle me-1"></i>Register Judge
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

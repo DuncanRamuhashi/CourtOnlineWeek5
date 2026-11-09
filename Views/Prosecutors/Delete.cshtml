@@ -1,0 +1,97 @@
+
+@{
+    ViewData["Title"] = "Delete Prosecutor";
+    var p = ViewBag.Prosecutor;
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back to Prosecutors
+    </a>
+</div>
+
+<div class="mb-4">
+    <h2 class="fw-bold text-dark mb-1">
+        <i class="bi bi-trash me-2"></i>Delete Prosecutor
+    </h2>
+    <p class="text-muted mb-0">Review prosecutor information before confirming deletion.</p>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-dark text-white py-3 px-4">
+        <h5 class="mb-0 fw-semibold">
+            <i class="bi bi-exclamation-triangle me-2"></i>Confirm Delete Prosecutor
+        </h5>
+    </div>
+
+    <div class="card-body p-4">
+
+        <div class="alert alert-light border mb-4">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-circle text-dark fs-3 me-3"></i>
+                <div>
+                    <h6 class="fw-bold text-dark mb-1">Are you sure?</h6>
+                    <p class="text-muted mb-0">
+                        You are about to delete the following prosecutor.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-light border rounded-3 p-3 mb-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Prosecutor Name</small>
+                    <span class="fw-semibold text-dark">@p.Name</span>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted d-block mb-1">Prosecutor ID</small>
+                    <span class="badge bg-dark">@p.Id</span>
+                </div>
+            </div>
+        </div>
+
+        @if (p.CourtCases != null && p.CourtCases.Count > 0)
+        {
+            <div class="alert alert-warning">
+                <h6 class="fw-bold">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Deletion Not Allowed
+                </h6>
+                <p class="mb-0">
+                    This prosecutor is assigned to court cases and cannot be deleted.
+                    Deactivate the prosecutor instead.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger">
+                <i class="bi bi-info-circle me-2"></i>
+                This action cannot be undone. The prosecutor will be permanently deleted.
+            </div>
+        }
+
+        <form asp-action="Delete" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@p.Id" />
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-4 mt-4">
+
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-x-circle me-1"></i>Cancel
+                </a>
+
+                @if (p.CourtCases == null || p.CourtCases.Count == 0)
+                {
+                    <button type="submit" class="btn btn-dark px-4">
+                        <i class="bi bi-trash me-1"></i>Confirm Delete
+                    </button>
+                }
+
+            </div>
+        </form>
+
+    </div>
+</div>

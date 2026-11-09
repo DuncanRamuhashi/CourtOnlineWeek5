@@ -1,0 +1,143 @@
+﻿
+@model CourtOnlineWeek5.Models.OriginalCase
+
+@{
+    ViewData["Title"] = "Register Original Case";
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-black text-white py-3">
+        <h4 class="mb-0 text-white">
+            <i class="bi bi-folder-plus me-2"></i>
+            Register Original Case
+        </h4>
+    </div>
+
+    <div class="card-body p-4">
+
+        <form asp-action="Create" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label asp-for="CaseNumber" class="form-label">
+                        Case Number *
+                    </label>
+
+                    <input asp-for="CaseNumber"
+                           class="form-control"
+                           placeholder="e.g. 2024/JHB/00123" />
+
+                    <span asp-validation-for="CaseNumber"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">
+                        Case Name *
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control"
+                           placeholder="e.g. State v. Thabo Mokoena" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Date" class="form-label">
+                        Date Opened *
+                    </label>
+
+                    <input asp-for="Date"
+                           type="date"
+                           class="form-control"
+                           value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+                    <span asp-validation-for="Date"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="CaseType" class="form-label">
+                        Case Type
+                    </label>
+
+                    <select asp-for="CaseType" class="form-select">
+                        <option value="">Select type</option>
+                        <option>Criminal</option>
+                        <option>Civil</option>
+                        <option>Family</option>
+                        <option>Commercial</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Priority" class="form-label">
+                        Priority
+                    </label>
+
+                    <select asp-for="Priority" class="form-select">
+                        <option>Low</option>
+                        <option selected>Normal</option>
+                        <option>High</option>
+                        <option>Urgent</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ReportedBy" class="form-label">
+                        Reported By
+                    </label>
+
+                    <input asp-for="ReportedBy"
+                           class="form-control"
+                           placeholder="Enter reporting person's name" />
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">
+                        Case Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"
+                              placeholder="Enter case details..."></textarea>
+                </div>
+
+            </div>
+
+            <hr class="my-4" />
+
+            <div class="d-flex gap-2">
+
+                <button type="submit" class="btn btn-dark">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Register Case
+                </button>
+
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+```

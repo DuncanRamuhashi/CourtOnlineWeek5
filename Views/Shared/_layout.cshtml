@@ -1,84 +1,171 @@
-﻿﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Case Management</title>
+    <title>@ViewData["Title"] - Court Case Management</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css">
+    <!-- Local Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+
+    <!-- Local Bootstrap Icons -->
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
 </head>
 
-<body class="bg-light min-vh-100 d-flex flex-column">
+<body class="bg-light">
 
-   
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-            <div class="container">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
 
-                <a class="navbar-brand fw-bold" href="/">
+            <a class="navbar-brand fw-bold"
+               asp-controller="Home"
+               asp-action="Index">
+                <i class="bi bi-building-fill me-2"></i>
+                Court Case Management
+            </a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            <i class="bi bi-house-door me-1"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <div class="d-flex">
+
+        <!-- SIDEBAR -->
+        <aside class="bg-dark text-white d-none d-md-block"
+               style="width: 260px; min-height: calc(100vh - 56px);">
+
+            <div class="p-3">
+                <small class="text-uppercase text-white-50 fw-bold">
                     Case Management
+                </small>
+            </div>
+
+            <nav class="nav flex-column px-2">
+
+                <a class="nav-link text-white"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Dashboard
                 </a>
 
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
 
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                <a class="nav-link text-white"
+                   asp-controller="CourtCases"
+                   asp-action="Index">
+                    <i class="bi bi-briefcase me-2"></i>
+                    Court Cases
+                </a>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="nav-link text-white"
+                   asp-controller="Charges"
+                   asp-action="Index">
+                    <i class="bi bi-file-earmark-text me-2"></i>
+                    Charges
+                </a>
 
-                    <ul class="navbar-nav ms-auto">
+                <a class="nav-link text-white"
+                   asp-controller="Defendants"
+                   asp-action="Index">
+                    <i class="bi bi-people me-2"></i>
+                    Defendants
+                </a>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">
-                                Home
-                            </a>
-                        </li>
+                <hr class="border-secondary" />
 
-
-
-                    </ul>
+                <div class="px-3 mb-2">
+                    <small class="text-uppercase text-white-50 fw-bold">
+                        Administration
+                    </small>
                 </div>
 
-            </div>
-        </nav>
-    </header>
+                <a class="nav-link text-white"
+                   asp-controller="Courts"
+                   asp-action="Index">
+                    <i class="bi bi-bank me-2"></i>
+                    Courts
+                </a>
 
-   
-    <main class="container flex-grow-1 py-5">
+                <a class="nav-link text-white"
+                   asp-controller="Judges"
+                   asp-action="Index">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Judges
+                </a>
 
-        <div class="mb-4 pb-3 border-bottom">
-            @RenderSection("title", required: false)
-        </div>
+                <a class="nav-link text-white"
+                   asp-controller="Prosecutors"
+                   asp-action="Index">
+                    <i class="bi bi-person-check me-2"></i>
+                    Prosecutors
+                </a>
 
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4">
-                @RenderBody()
-            </div>
-        </div>
+            </nav>
+        </aside>
 
-    </main>
+        <!-- CONTENT -->
+        <main class="flex-grow-1 p-4">
 
-    
-    <footer class="bg-dark text-white-50 py-3 mt-auto">
-        <div class="container text-center">
-            <p class="mb-0">
-                &copy; @DateTime.Now.Year Court Management System
-                <span class="mx-2">|</span>
-                All rights reserved.
-            </p>
-        </div>
-    </footer>
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show"
+                     role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    @TempData["Success"]
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    @TempData["Error"]
+
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+<!-- FOOTER -->
+<footer class="bg-dark border-top text-center py-3 mt-auto">
+    <div class="container text-white small">
+        &copy; @DateTime.Now.Year - Court Case Management System
+    </div>
+</footer>
+
+    <!-- Local Bootstrap JavaScript -->
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 

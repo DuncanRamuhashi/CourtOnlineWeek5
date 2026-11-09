@@ -1,0 +1,159 @@
+﻿
+@model CourtOnlineWeek5.Models.OriginalCase
+
+@{
+    ViewData["Title"] = "Edit Original Case";
+}
+
+<!-- BACK BUTTON -->
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>
+        Back to Original Cases
+    </a>
+</div>
+
+<!-- EDIT ORIGINAL CASE -->
+<div class="card border-0 shadow-sm">
+
+    <div class="card-header bg-black text-white py-3">
+        <h4 class="mb-0 text-white">
+            <i class="bi bi-pencil-square me-2"></i>
+            Edit Original Case
+        </h4>
+    </div>
+
+    <div class="card-body p-4">
+
+        <form asp-action="Edit" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <h5 class="mb-3">
+                <i class="bi bi-info-circle me-2"></i>
+                Case Information
+            </h5>
+
+            <div class="row g-3">
+
+                <!-- CASE NUMBER -->
+                <div class="col-md-6">
+                    <label asp-for="CaseNumber" class="form-label">
+                        Case Number *
+                    </label>
+
+                    <input asp-for="CaseNumber"
+                           class="form-control" />
+
+                    <span asp-validation-for="CaseNumber"
+                          class="text-danger"></span>
+                </div>
+
+                <!-- CASE NAME -->
+                <div class="col-md-6">
+                    <label asp-for="Name" class="form-label">
+                        Case Name *
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger"></span>
+                </div>
+
+                <!-- DATE -->
+                <div class="col-md-4">
+                    <label asp-for="Date" class="form-label">
+                        Date Opened *
+                    </label>
+
+                    <input asp-for="Date"
+                           type="date"
+                           class="form-control"
+                           value="@Model.Date.ToString("yyyy-MM-dd")" />
+
+                    <span asp-validation-for="Date"
+                          class="text-danger"></span>
+                </div>
+
+                <!-- CASE TYPE -->
+                <div class="col-md-4">
+                    <label asp-for="CaseType" class="form-label">
+                        Case Type
+                    </label>
+
+                    <select asp-for="CaseType" class="form-select">
+                        <option value="">Select type</option>
+                        <option value="Criminal">Criminal</option>
+                        <option value="Civil">Civil</option>
+                        <option value="Family">Family</option>
+                        <option value="Commercial">Commercial</option>
+                    </select>
+                </div>
+
+                <!-- PRIORITY -->
+                <div class="col-md-4">
+                    <label asp-for="Priority" class="form-label">
+                        Priority
+                    </label>
+
+                    <select asp-for="Priority" class="form-select">
+                        <option value="Low">Low</option>
+                        <option value="Normal">Normal</option>
+                        <option value="High">High</option>
+                        <option value="Urgent">Urgent</option>
+                    </select>
+                </div>
+
+                <!-- REPORTED BY -->
+                <div class="col-md-6">
+                    <label asp-for="ReportedBy" class="form-label">
+                        Reported By
+                    </label>
+
+                    <input asp-for="ReportedBy"
+                           class="form-control" />
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label">
+                        Case Description
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="4"></textarea>
+                </div>
+
+            </div>
+
+            <hr class="my-4" />
+
+            <!-- ACTION BUTTONS -->
+            <div class="d-flex gap-2">
+
+                <button type="submit" class="btn btn-dark">
+                    <i class="bi bi-check-lg me-1"></i>
+                    Save Changes
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i>
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+```

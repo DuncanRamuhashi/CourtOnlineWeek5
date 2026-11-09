@@ -1,0 +1,186 @@
+
+@model CourtOnlineWeek5.Models.Defendant
+@{
+    ViewData["Title"] = "Edit Defendant";
+}
+
+<div class="container-fluid py-3">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-outline-dark btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i>Back to Defendants
+        </a>
+    </div>
+
+    <!-- Page Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-person-gear me-2"></i>Edit Defendant
+        </h2>
+        <p class="text-muted mb-0">
+            Update defendant personal information, contact details and custody status.
+        </p>
+    </div>
+
+    <!-- Edit Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <div class="card-header bg-white border-bottom py-3 px-4">
+            <h5 class="fw-bold text-dark mb-1">
+                Defendant Information
+            </h5>
+            <small class="text-muted">
+                Modify the information below and save your changes.
+            </small>
+        </div>
+
+        <div class="card-body p-4">
+
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- Personal Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-person-vcard me-2"></i>Personal Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Defendant ID</label>
+                            <input value="@Model.Id" class="form-control bg-light" disabled />
+                            <small class="text-muted">Defendant ID cannot be changed.</small>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                Full Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control" placeholder="Enter full name" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Idnumber" class="form-label fw-semibold">
+                                SA ID Number
+                            </label>
+                            <input asp-for="Idnumber" class="form-control" placeholder="13-digit ID number" />
+                            <span asp-validation-for="Idnumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="DateOfBirth" class="form-label fw-semibold">
+                                Date of Birth
+                            </label>
+                            <input asp-for="DateOfBirth"
+                                   type="date"
+                                   class="form-control"
+                                   value="@(Model.DateOfBirth?.ToString("yyyy-MM-dd"))" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Gender" class="form-label fw-semibold">
+                                Gender
+                            </label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Nationality" class="form-label fw-semibold">
+                                Nationality
+                            </label>
+                            <input asp-for="Nationality" class="form-control" placeholder="Nationality" />
+                            <span asp-validation-for="Nationality" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label asp-for="Phone" class="form-label fw-semibold">
+                                Phone Number
+                            </label>
+                            <input asp-for="Phone" class="form-control" placeholder="Enter phone number" />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle my-4" />
+
+                <!-- Contact Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-geo-alt me-2"></i>Contact Information
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-8">
+                            <label asp-for="Address" class="form-label fw-semibold">
+                                Residential Address
+                            </label>
+                            <input asp-for="Address" class="form-control" placeholder="Enter residential address" />
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle my-4" />
+
+                <!-- Custody Information -->
+                <div class="mb-4">
+
+                    <h6 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-shield-lock me-2"></i>Custody Information
+                    </h6>
+
+                    <div class="bg-light border rounded-3 p-3">
+
+                        <div class="form-check">
+                            <input asp-for="IsInCustody" class="form-check-input" />
+
+                            <label asp-for="IsInCustody" class="form-check-label fw-semibold">
+                                Currently In Custody
+                            </label>
+                        </div>
+
+                        <small class="text-muted ms-4">
+                            Update whether the defendant is currently being held in custody.
+                        </small>
+
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex justify-content-end gap-2 border-top pt-4">
+
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-dark px-4">
+                        <i class="bi bi-check-circle me-1"></i>Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>

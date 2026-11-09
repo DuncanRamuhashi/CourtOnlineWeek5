@@ -1,0 +1,133 @@
+@{
+    ViewData["Title"] = "Judges";
+}
+
+<div class="container-fluid px-0">
+
+    <!-- Page Heading -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                <i class="bi bi-person-badge me-2"></i>Judges
+            </h2>
+            <p class="text-secondary mb-0">Manage judges and magistrates</p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-dark px-4 py-2">
+            <i class="bi bi-plus-circle me-1"></i>Register Judge
+        </a>
+    </div>
+
+    <!-- Judges Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <!-- Dark Header -->
+        <div class="card-header bg-dark text-white py-3">
+            <h6 class="mb-0 fw-semibold">
+                <i class="bi bi-person-badge me-2"></i>Judge Directory
+            </h6>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th class="py-3 px-3">ID</th>
+                            <th class="py-3">Name</th>
+                            <th class="py-3">Title</th>
+                            <th class="py-3">Court</th>
+                            <th class="py-3">Email</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3 px-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in ViewBag.Judges)
+                        {
+                            <tr>
+                                <td class="px-3">
+                                    <span class="text-muted">
+                                        @item.Id
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="fw-semibold text-dark">
+                                        @item.Name
+                                    </span>
+                                </td>
+
+                                <td class="text-secondary">
+                                    @(item.Title ?? "—")
+                                </td>
+
+                                <td class="text-secondary">
+                                    @(item.Court?.Name ?? "—")
+                                </td>
+
+                                <td class="text-secondary">
+                                    @(item.Email ?? "—")
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="">
+                                            <i class=""></i>Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="">
+                                            Inactive
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-3">
+                                    <div class="d-flex justify-content-center align-items-center gap-2 flex-nowrap">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-dark text-nowrap">
+                                            <i class="bi bi-eye me-1"></i>View
+                                        </a>
+
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary text-nowrap">
+                                            <i class="bi bi-pencil-square me-1"></i>Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger text-nowrap">
+                                            <i class="bi bi-trash3 me-1"></i>Delete
+                                        </a>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-white border-top py-3">
+            <small class="text-secondary">
+                <i class="bi bi-info-circle me-1"></i>
+                Judicial Personnel Management
+            </small>
+        </div>
+
+    </div>
+</div>

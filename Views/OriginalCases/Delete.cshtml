@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewData["Title"] = "Delete Original Case";
+    var oc = ViewBag.OriginalCase;
+}
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>
+        Back
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+
+    <!-- HEADER -->
+    <div class="card-header bg-black text-white py-3">
+        <h4 class="mb-0 text-white">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Confirm Delete
+        </h4>
+    </div>
+
+    <!-- BODY -->
+    <div class="card-body p-4">
+
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Are you sure you want to permanently delete this original case?
+        </div>
+
+        <h5 class="mb-3">Case Information</h5>
+
+        <dl class="row mb-4">
+
+            <dt class="col-sm-3">Case Number</dt>
+            <dd class="col-sm-9">
+                <code>@oc.CaseNumber</code>
+            </dd>
+
+            <dt class="col-sm-3">Case Name</dt>
+            <dd class="col-sm-9">@oc.Name</dd>
+
+            <dt class="col-sm-3">Date Opened</dt>
+            <dd class="col-sm-9">
+                @oc.Date.ToString("dd MMM yyyy")
+            </dd>
+
+            <dt class="col-sm-3">Priority</dt>
+            <dd class="col-sm-9">@oc.Priority</dd>
+
+        </dl>
+
+        @if (oc.CourtCases != null && oc.CourtCases.Count > 0)
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                <strong>Deletion Restricted</strong>
+
+                <p class="mb-0 mt-2">
+                    This original case has
+                    <strong>@oc.CourtCases.Count</strong>
+                    associated court case(s).
+
+                    You cannot delete this original case until
+                    those court cases are removed.
+                </p>
+            </div>
+        }
+
+        <!-- ACTIONS -->
+        <form asp-action="Delete" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="id" value="@oc.Id" />
+
+            <hr class="my-4" />
+
+            <div class="d-flex gap-2">
+
+                @if (oc.CourtCases == null || oc.CourtCases.Count == 0)
+                {
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-trash me-1"></i>
+                        Delete Permanently
+                    </button>
+                }
+
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-lg me-1"></i>
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+```

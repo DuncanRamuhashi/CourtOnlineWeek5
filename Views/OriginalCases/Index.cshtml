@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewData["Title"] = "Original Cases";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                Original Cases
+            </h2>
+            <p class="text-secondary mb-0">
+                Manage and monitor registered original cases.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-dark px-4 py-2">
+            <i class="bi bi-plus-circle me-2"></i>
+            Register Case
+        </a>
+    </div>
+
+    <!-- Cases Table -->
+    <div class="card border-0 shadow-sm rounded-3">
+
+        <!-- Card Header -->
+        <div class="card-header bg-dark text-white py-3 px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="bi bi-folder2-open me-2"></i>
+                    Registered Cases
+                </h6>
+
+                <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                    @(((IEnumerable<dynamic>)ViewBag.OriginalCases).Count()) Cases
+                </span>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th class="px-4 py-3 text-nowrap">Case Number</th>
+                            <th class="py-3">Case Name</th>
+                            <th class="py-3 text-nowrap">Date Opened</th>
+                            <th class="py-3">Case Type</th>
+                            <th class="py-3">Priority</th>
+                            <th class="py-3 text-end px-4 text-nowrap"
+                                style="min-width: 350px;">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in ViewBag.OriginalCases)
+                        {
+                            <tr>
+
+                                <!-- Case Number -->
+                                <td class="px-4 text-nowrap">
+                                    <span class="fw-semibold text-dark">
+                                        @item.CaseNumber
+                                    </span>
+                                </td>
+
+                                <!-- Case Name -->
+                                <td>
+                                    <span class="fw-semibold text-dark">
+                                        @item.Name
+                                    </span>
+                                </td>
+
+                                <!-- Date Opened -->
+                                <td class="text-secondary text-nowrap">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    @item.Date.ToString("dd MMM yyyy")
+                                </td>
+
+                                <!-- Case Type -->
+                                <td class="text-dark">
+                                    @item.CaseType
+                                </td>
+
+                                <!-- Priority -->
+                                <td class="text-dark text-nowrap">
+                                    @item.Priority
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="text-end px-4">
+                                    <div class="d-inline-flex align-items-center justify-content-end gap-2 flex-nowrap">
+
+                                        <!-- Details -->
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-dark text-nowrap"
+                                           title="View Details">
+                                            <i class="bi bi-eye me-1"></i>
+                                            View
+                                        </a>
+
+                                        <!-- Edit -->
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary text-nowrap"
+                                           title="Edit Case">
+                                            <i class="bi bi-pencil me-1"></i>
+                                            Edit
+                                        </a>
+
+                                        <!-- Delete -->
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger text-nowrap"
+                                           title="Delete Case">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Delete
+                                        </a>
+
+                                        <!-- Manage -->
+                                        <a asp-controller="CourtCases"
+                                           asp-action="Manage"
+                                           asp-route-originalCaseId="@item.Id"
+                                           class="btn btn-sm btn-dark text-nowrap">
+                                            <i class="bi bi-briefcase me-1"></i>
+                                            Manage
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+        <!-- Card Footer -->
+        <div class="card-footer bg-white border-top py-3 px-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-secondary">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Original Case Management
+                </small>
+
+                <small class="text-secondary">
+                    Court Online System
+                </small>
+            </div>
+        </div>
+
+    </div>
+</div>

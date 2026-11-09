@@ -1,0 +1,110 @@
+@model CourtOnlineWeek5.Models.Charge
+
+@{
+    ViewData["Title"] = "Delete Charge";
+}
+
+<div class="mb-4">
+    <a asp-controller="CourtCases"
+       asp-action="Manage"
+       asp-route-originalCaseId="@Model.CourtCase?.OriginalCaseId"
+       class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Court Case
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-dark text-white p-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-trash3 fs-3 me-3"></i>
+            <div>
+                <h4 class="mb-1">Delete Charge</h4>
+                <small class="text-white-50">Remove a charge from the court case</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+
+        <div class="alert alert-danger border-0 rounded-2 mb-4">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                <div>
+                    <strong>Warning: Permanent Action</strong>
+                    <div class="small">
+                        Are you sure you want to delete this charge? This action cannot be undone.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="text-uppercase fw-bold text-secondary mb-3">
+            <i class="bi bi-file-earmark-text me-2"></i>Charge Details
+        </h6>
+
+        <div class="bg-light border rounded-3 p-4 mb-4">
+
+            <dl class="row mb-0">
+
+                <dt class="col-sm-3 text-secondary">Charge Name</dt>
+                <dd class="col-sm-9 fw-semibold">@Model.Name</dd>
+
+                <dt class="col-sm-3 text-secondary">Charge Code</dt>
+                <dd class="col-sm-9">@(Model.ChargeCode ?? "—")</dd>
+
+                <dt class="col-sm-3 text-secondary">Statute</dt>
+                <dd class="col-sm-9">@(Model.Statute ?? "—")</dd>
+
+                <dt class="col-sm-3 text-secondary">Plea</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-dark">
+                        @(Model.Plea ?? "Not entered")
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3 text-secondary">Severity</dt>
+                <dd class="col-sm-9">
+                    @(Model.Severity ?? "Not specified")
+                </dd>
+
+                <dt class="col-sm-3 text-secondary">Original Case</dt>
+                <dd class="col-sm-9">
+                    @(Model.CourtCase?.OriginalCase?.Name ?? "—")
+                </dd>
+
+            </dl>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+
+            <small class="text-muted">
+                <i class="bi bi-shield-exclamation me-1"></i>
+                Please verify the charge before deleting.
+            </small>
+
+            <form asp-controller="Charges"
+                  asp-action="Delete"
+                  asp-route-id="@Model.Id"
+                  method="post"
+                  class="d-flex gap-2">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="bi bi-trash3 me-1"></i> Delete Charge
+                </button>
+
+                <a asp-controller="CourtCases"
+                   asp-action="Manage"
+                   asp-route-originalCaseId="@Model.CourtCase?.OriginalCaseId"
+                   class="btn btn-outline-dark px-4">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

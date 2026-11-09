@@ -1,0 +1,164 @@
+
+@{
+    ViewData["Title"] = "Delete Court Case";
+    var cc = ViewBag.CourtCase;
+}
+
+<div class="mb-4">
+    <a asp-action="Manage"
+       asp-route-originalCaseId="@cc.OriginalCaseId"
+       class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Court Case
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <!-- Header -->
+    <div class="card-header bg-dark text-white p-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-trash3 fs-3 me-3"></i>
+            <div>
+                <h4 class="mb-1">Delete Court Case</h4>
+                <small class="text-white-50">
+                    Review the court case before permanent deletion
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+
+        <!-- Warning -->
+        <div class="alert alert-danger border-0 rounded-3 mb-4">
+            <div class="d-flex align-items-start">
+                <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+                <div>
+                    <h6 class="fw-bold mb-2">Permanent Deletion Warning</h6>
+
+                    <p class="mb-2">
+                        Are you sure you want to permanently delete this court case?
+                    </p>
+
+                    <p class="mb-0 small">
+                        Deleting this court case will also permanently delete all associated
+                        <strong>charges</strong> and
+                        <strong>defendant assignments</strong>.
+                        The defendant records themselves will be preserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Court Case Information -->
+        <h6 class="text-uppercase fw-bold text-secondary mb-3">
+            <i class="bi bi-folder2-open me-2"></i>
+            Court Case Information
+        </h6>
+
+        <div class="bg-light border rounded-3 p-4 mb-4">
+
+            <dl class="row mb-0">
+
+                <dt class="col-sm-3 text-secondary">Case Number</dt>
+                <dd class="col-sm-9 fw-semibold">
+                    @(cc.CaseNumber ?? "—")
+                </dd>
+
+                <dt class="col-sm-3 text-secondary">Original Case</dt>
+                <dd class="col-sm-9">
+                    @cc.OriginalCase?.Name
+                </dd>
+
+                <dt class="col-sm-3 text-secondary">Status</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-dark">
+                        @(cc.Status ?? "—")
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3 text-secondary">Court</dt>
+                <dd class="col-sm-9">
+                    @(cc.Court?.Name ?? "—")
+                </dd>
+
+            </dl>
+
+        </div>
+
+        <!-- Associated Records -->
+        <h6 class="text-uppercase fw-bold text-secondary mb-3">
+            <i class="bi bi-diagram-3 me-2"></i>
+            Associated Records
+        </h6>
+
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-dark text-white rounded-3 p-3 me-3">
+                            <i class="bi bi-journal-text fs-4"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Associated Charges</small>
+                            <h4 class="fw-bold mb-0">
+                                @(cc.Charges?.Count ?? 0)
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded-3 p-3 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-dark text-white rounded-3 p-3 me-3">
+                            <i class="bi bi-people fs-4"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block">Defendant Assignments</small>
+                            <h4 class="fw-bold mb-0">
+                                @(cc.CourtCaseDefendants?.Count ?? 0)
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Confirmation -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            <small class="text-muted">
+                <i class="bi bi-shield-exclamation me-1"></i>
+                This action cannot be undone.
+            </small>
+
+            <form asp-action="Delete" method="post"
+                  class="d-flex gap-2">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@cc.Id" />
+
+                <button type="submit" class="btn btn-danger px-4">
+                    <i class="bi bi-trash3 me-1"></i>
+                    Delete Permanently
+                </button>
+
+                <a asp-action="Manage"
+                   asp-route-originalCaseId="@cc.OriginalCaseId"
+                   class="btn btn-outline-dark px-4">
+                    Cancel
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>

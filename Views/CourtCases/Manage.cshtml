@@ -1,0 +1,466 @@
+
+@{
+    ViewData["Title"] = "Manage Court Case";
+    var oc = ViewBag.OriginalCase;
+    var cc = ViewBag.CourtCase;
+}
+
+<!-- PAGE HEADER -->
+<div class="container-fluid px-0">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+
+        <div>
+            <h3 class="fw-bold text-dark mb-2">
+                <i class="bi bi-briefcase me-2"></i>@oc.Name
+            </h3>
+
+            <div class="d-flex flex-wrap align-items-center gap-2 text-muted small">
+                <span>Original Case:</span>
+                <code class="text-dark">@oc.CaseNumber</code>
+                <span class="text-secondary">|</span>
+                <span>Priority:</span>
+                <span class="badge bg-dark">@oc.Priority</span>
+                <span class="text-secondary">|</span>
+                <span>Type: @oc.CaseType</span>
+            </div>
+        </div>
+
+        <div>
+            <a asp-controller="OriginalCases"
+               asp-action="Index"
+               class="btn btn-outline-dark">
+                <i class="bi bi-arrow-left me-1"></i>
+                Back to Original Cases
+            </a>
+        </div>
+
+    </div>
+
+    @if (cc == null)
+    {
+        <!-- NO COURT CASE -->
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body text-center py-5">
+
+                <i class="bi bi-folder-x display-3 text-secondary"></i>
+
+                <h5 class="fw-bold text-dark mt-3">
+                    No Court Case Created
+                </h5>
+
+                <p class="text-muted mb-4">
+                    There is currently no court case associated with this original case.
+                </p>
+
+                <a asp-action="Create"
+                   asp-route-originalCaseId="@oc.Id"
+                   class="btn btn-dark px-4">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Create Court Case
+                </a>
+
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- COURT CASE INFORMATION -->
+        <div class="card border-0 shadow-sm rounded-3 mb-4">
+
+            <div class="card-header bg-dark text-white p-3">
+
+                <div class="row align-items-center g-2">
+
+                    <div class="col">
+                        <h5 class="fw-bold mb-1">
+                            <i class="bi bi-briefcase me-2"></i>
+                            Court Case Information
+                        </h5>
+                        <small class="text-white-50">
+                            Overview of court proceedings and case assignments
+                        </small>
+                    </div>
+
+                    <div class="col-auto d-flex flex-wrap gap-2">
+
+                        <a asp-action="Edit"
+                           asp-route-id="@cc.Id"
+                           class="btn btn-sm btn-light">
+                            <i class="bi bi-pencil me-1"></i>Edit
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@cc.Id"
+                           class="btn btn-sm btn-outline-light">
+                            <i class="bi bi-trash me-1"></i>Delete
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="row g-4">
+
+                    <!-- CASE DETAILS -->
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <h6 class="fw-bold text-dark border-bottom pb-3 mb-3">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Case Details
+                        </h6>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Case Number</small>
+                            <span class="fw-semibold text-dark">
+                                @(cc.CaseNumber ?? "—")
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Status</small>
+                            <span class="badge bg-dark">@cc.Status</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Court</small>
+                            <span class="fw-semibold text-dark">
+                                @(cc.Court?.Name ?? "Not assigned")
+                            </span>
+                        </div>
+
+                        <div class="mb-0">
+                            <small class="text-muted d-block mb-1">Judge</small>
+                            <span class="fw-semibold text-dark">
+                                @(cc.Judge?.Name ?? "Not assigned")
+                            </span>
+                        </div>
+
+                    </div>
+
+                    
+
+                    <!-- OUTCOME AND NOTES -->
+                    <div class="col-12 col-xl-4">
+
+                        <h6 class="fw-bold text-dark border-bottom pb-3 mb-3">
+                            <i class="bi bi-clipboard-check me-2"></i>
+                            Outcome & Additional Information
+                        </h6>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Outcome</small>
+                            <span class="fw-semibold text-dark">
+                                @(cc.Outcome ?? "Not recorded")
+                            </span>
+                        </div>
+
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Confidentiality</small>
+
+                            @if (cc.IsConfidential)
+                            {
+                                <span class="badge bg-dark">
+                                    <i class="bi bi-lock me-1"></i>Confidential
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Not Confidential</span>
+                            }
+                        </div>
+
+                        <div>
+                            <small class="text-muted d-block mb-2">Notes</small>
+
+                            @if (!string.IsNullOrEmpty(cc.Notes))
+                            {
+                                <div class="bg-light border rounded-3 p-3">
+                                    <p class="text-dark small mb-0">
+                                        @cc.Notes
+                                    </p>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">No additional notes recorded.</span>
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- CHARGES AND DEFENDANTS -->
+        <div class="row g-4 align-items-stretch">
+
+            <!-- CHARGES -->
+            <div class="col-12 col-xl-6">
+
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+
+                    <div class="card-header bg-dark text-white p-3">
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+                            <div>
+                                <h5 class="fw-bold mb-1">
+                                    <i class="bi bi-file-earmark-text me-2"></i>
+                                    Charges
+                                </h5>
+                                <small class="text-white-50">
+                                    Manage charges associated with this case
+                                </small>
+                            </div>
+
+                            <a asp-controller="Charges"
+                               asp-action="Create"
+                               asp-route-courtCaseId="@cc.Id"
+                               class="btn btn-sm btn-light">
+                                <i class="bi bi-plus-lg me-1"></i>
+                                Add Charge
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body p-3">
+
+                        @if (ViewBag.Charges != null && ((IEnumerable<object>)ViewBag.Charges).Any())
+                        {
+                            @foreach (var charge in ViewBag.Charges)
+                            {
+                                <div class="border rounded-3 p-3 mb-3">
+
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-1">
+                                                @charge.Name
+                                            </h6>
+
+                                            <small class="text-muted">
+                                                Charge Code: @(charge.ChargeCode ?? "—")
+                                            </small>
+                                        </div>
+
+                                        <span class="badge bg-dark">
+                                            @(charge.Severity ?? "—")
+                                        </span>
+
+                                    </div>
+
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Plea</small>
+                                            <span class="fw-semibold text-dark small">
+                                                @(charge.Plea ?? "No plea")
+                                            </span>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Statute</small>
+                                            <span class="fw-semibold text-dark small">
+                                                @(charge.Statute ?? "—")
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <a asp-controller="Charges"
+                                           asp-action="Edit"
+                                           asp-route-id="@charge.Id"
+                                           class="btn btn-sm btn-outline-dark">
+                                            <i class="bi bi-pencil me-1"></i>
+                                            Edit
+                                        </a>
+
+                                        <a asp-controller="Charges"
+                                           asp-action="Delete"
+                                           asp-route-id="@charge.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash me-1"></i>
+                                            Delete
+                                        </a>
+
+                                    </div>
+
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+
+                                <i class="bi bi-file-earmark-text display-5 text-secondary"></i>
+
+                                <h6 class="fw-bold text-dark mt-3">
+                                    No Charges Found
+                                </h6>
+
+                                <p class="text-muted small mb-0">
+                                    No charges have been added to this court case yet.
+                                </p>
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DEFENDANTS -->
+            <div class="col-12 col-xl-6">
+
+                <div class="card border-0 shadow-sm rounded-3 h-100">
+
+                    <div class="card-header bg-dark text-white p-3">
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+
+                            <div>
+                                <h5 class="fw-bold mb-1">
+                                    <i class="bi bi-people me-2"></i>
+                                    Defendants
+                                </h5>
+                                <small class="text-white-50">
+                                    Manage people associated with this case
+                                </small>
+                            </div>
+
+                            <a asp-action="AddDefendant"
+                               asp-route-courtCaseId="@cc.Id"
+                               class="btn btn-sm btn-light">
+                                <i class="bi bi-plus-lg me-1"></i>
+                                Add Defendant
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="card-body p-3">
+
+                        @if (ViewBag.Defendants != null && ((IEnumerable<object>)ViewBag.Defendants).Any())
+                        {
+                            @foreach (var item in ViewBag.Defendants)
+                            {
+                                <div class="border rounded-3 p-3 mb-3">
+
+                                    <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
+
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-1">
+                                                @item.Defendant.Name
+                                            </h6>
+
+                                            <small class="text-muted">
+                                                Defendant ID: @item.Defendant.Id
+                                            </small>
+                                        </div>
+
+                                        @if (item.IsPrimary)
+                                        {
+                                            <span class="badge bg-dark">Primary</span>
+                                        }
+
+                                    </div>
+
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Role</small>
+                                            <span class="fw-semibold text-dark small">
+                                                @(item.Role ?? "Accused")
+                                            </span>
+                                        </div>
+
+                                        <div class="col-6">
+                                            <small class="text-muted d-block">Custody Status</small>
+
+                                            @if (item.Defendant.IsInCustody)
+                                            {
+                                                <span class="badge bg-dark">In Custody</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not in Custody</span>
+                                            }
+                                        </div>
+
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-2">
+
+                                        <a asp-controller="Defendants"
+                                           asp-action="Details"
+                                           asp-route-id="@item.DefendantId"
+                                           class="btn btn-sm btn-outline-dark">
+                                            <i class="bi bi-eye me-1"></i>
+                                            View
+                                        </a>
+
+                                        <form asp-action="RemoveDefendant"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Remove this defendant from the case? The defendant record will be preserved.');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="courtCaseId"
+                                                   value="@cc.Id" />
+
+                                            <input type="hidden"
+                                                   name="defendantId"
+                                                   value="@item.DefendantId" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-person-dash me-1"></i>
+                                                Remove
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+
+                                <i class="bi bi-people display-5 text-secondary"></i>
+
+                                <h6 class="fw-bold text-dark mt-3">
+                                    No Defendants Found
+                                </h6>
+
+                                <p class="text-muted small mb-0">
+                                    No defendants have been assigned to this court case yet.
+                                </p>
+
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

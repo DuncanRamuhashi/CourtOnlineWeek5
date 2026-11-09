@@ -1,0 +1,142 @@
+@model CourtOnlineWeek5.Models.Charge
+
+@{
+    ViewData["Title"] = "Add Charge";
+    var courtCase = ViewBag.CourtCase as CourtOnlineWeek5.Models.CourtCase;
+}
+
+<div class="mb-4">
+    <a asp-controller="CourtCases"
+       asp-action="Manage"
+       asp-route-originalCaseId="@courtCase?.OriginalCaseId"
+       class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Court Case
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-dark text-white p-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-journal-plus fs-3 me-3"></i>
+            <div>
+                <h4 class="mb-1">Add Charge</h4>
+                <small class="text-white-50">Register a new charge against this court case</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+
+        <div class="alert bg-light border-start border-4 border-dark rounded-2 mb-4">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-briefcase fs-4 me-3 text-dark"></i>
+                <div>
+                    <small class="text-muted d-block">Court Case</small>
+                    <strong>@courtCase?.OriginalCase?.Name</strong>
+                    <div class="small text-muted">
+                        Case Number: @courtCase?.CaseNumber
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="text-uppercase fw-bold text-secondary mb-3">
+            <i class="bi bi-file-earmark-text me-2"></i>Charge Information
+        </h6>
+
+        <form asp-controller="Charges" asp-action="Create" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="CourtCaseId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+
+                <div class="col-md-8">
+                    <label asp-for="Name" class="form-label fw-semibold">
+                        Charge Name <span class="text-danger">*</span>
+                    </label>
+                    <input asp-for="Name" class="form-control"
+                           placeholder="e.g. Theft of Motor Vehicle" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ChargeCode" class="form-label fw-semibold">
+                        Charge Code
+                    </label>
+                    <input asp-for="ChargeCode" class="form-control"
+                           placeholder="e.g. Theft" />
+                    <span asp-validation-for="ChargeCode" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Statute" class="form-label fw-semibold">
+                        Statute
+                    </label>
+                    <input asp-for="Statute" class="form-control"
+                           placeholder="e.g. Criminal Procedure Act" />
+                    <span asp-validation-for="Statute" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Plea" class="form-label fw-semibold">Plea</label>
+                    <select asp-for="Plea" class="form-select">
+                        <option value="">No plea yet</option>
+                        <option value="Guilty">Guilty</option>
+                        <option value="Not Guilty">Not Guilty</option>
+                    </select>
+                    <span asp-validation-for="Plea" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Severity" class="form-label fw-semibold">
+                        Severity
+                    </label>
+                    <select asp-for="Severity" class="form-select">
+                        <option value="">Select</option>
+                        <option value="Petty">Petty</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Serious">Serious</option>
+                        <option value="Schedule 5">Schedule 5</option>
+                        <option value="Schedule 6">Schedule 6</option>
+                    </select>
+                    <span asp-validation-for="Severity" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label fw-semibold">
+                        Description
+                    </label>
+                    <textarea asp-for="Description" class="form-control"
+                              rows="3"
+                              placeholder="Enter charge details..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark px-4">
+                    <i class="bi bi-plus-circle me-1"></i> Add Charge
+                </button>
+
+                <a asp-controller="CourtCases"
+                   asp-action="Manage"
+                   asp-route-originalCaseId="@courtCase?.OriginalCaseId"
+                   class="btn btn-outline-secondary px-4">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+

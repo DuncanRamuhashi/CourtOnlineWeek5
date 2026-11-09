@@ -1,0 +1,156 @@
+
+@{
+    ViewData["Title"] = "Add Defendant to Court Case";
+}
+
+<div class="mb-4">
+    <a asp-action="Manage"
+       asp-route-originalCaseId="@ViewBag.OriginalCaseId"
+       class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Court Case
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-dark text-white p-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-person-plus fs-3 me-3"></i>
+            <div>
+                <h4 class="mb-1">Add Defendant to Court Case</h4>
+                <small class="text-white-50">
+                    Assign a registered defendant to this court case
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+
+        @if (ViewBag.AvailableDefendants == null || !((IEnumerable<object>)ViewBag.AvailableDefendants).Any())
+        {
+            <div class="alert alert-light border-start border-4 border-dark shadow-sm p-4">
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-info-circle-fill fs-4 me-3 text-dark"></i>
+                    <div>
+                        <h6 class="fw-bold mb-2">No Available Defendants</h6>
+                        <p class="mb-3">
+                            All registered defendants are already assigned to this case,
+                            or there are currently no defendants in the system.
+                        </p>
+
+                        <a asp-controller="Defendants" asp-action="Create"
+                           class="btn btn-dark btn-sm">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Register New Defendant
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <h6 class="text-uppercase fw-bold text-secondary mb-3">
+                <i class="bi bi-person-vcard me-2"></i>
+                Defendant Assignment
+            </h6>
+
+            <form asp-action="AddDefendant" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="courtCaseId"
+                       value="@ViewBag.CourtCaseId" />
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Select Defendant <span class="text-danger">*</span>
+                    </label>
+
+                    <select name="defendantId" class="form-select" required>
+                        <option value="">-- Select Defendant --</option>
+
+                        @foreach (var d in ViewBag.AvailableDefendants)
+                        {
+                            <option value="@d.Id">
+                                @d.Name (@d.Id)
+                                @(d.IsInCustody ? " — In Custody" : "")
+                            </option>
+                        }
+                    </select>
+
+                    <div class="form-text">
+                        Select an existing defendant from the registered records.
+                    </div>
+                </div>
+
+                <div class="bg-light border rounded-3 p-4">
+
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-diagram-3 me-2"></i>
+                        Case Assignment Details
+                    </h6>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Defendant Role</label>
+
+                            <select name="role" class="form-select">
+                                <option value="Accused">Accused</option>
+                                <option value="Co-Accused">Co-Accused</option>
+                                <option value="Accomplice">Accomplice</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-check mt-md-4 pt-md-2">
+                                <input type="checkbox"
+                                       name="isPrimary"
+                                       value="true"
+                                       class="form-check-input"
+                                       id="isPrimary" />
+
+                                <label class="form-check-label fw-semibold"
+                                       for="isPrimary">
+                                    Primary Defendant
+                                </label>
+
+                                <div class="form-text">
+                                    Identify the principal accused in this case.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Verify defendant details before assigning.
+                    </small>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-dark px-4">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            Add to Case
+                        </button>
+
+                        <a asp-action="Manage"
+                           asp-route-originalCaseId="@ViewBag.OriginalCaseId"
+                           class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+                    </div>
+
+                </div>
+
+            </form>
+        }
+
+    </div>
+</div>

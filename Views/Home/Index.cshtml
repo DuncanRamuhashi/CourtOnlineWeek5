@@ -1,1 +1,234 @@
-﻿<h1> Welcome to the Case Management System</h1>
+﻿
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Dashboard Header -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="fw-bold text-dark mb-1">
+            <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </h2>
+        <p class="text-muted mb-0">
+            Court Case Management System overview
+        </p>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row g-3 mb-4">
+
+    <!-- Total Court Cases -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-2 small fw-semibold">
+                            TOTAL COURT CASES
+                        </p>
+                        <h2 class="fw-bold text-dark mb-0">
+                            @ViewBag.TotalCourtCases
+                        </h2>
+                    </div>
+
+               
+                </div>
+                <hr class="my-3">
+                <small class="text-muted">
+                    <i class="bi bi-folder2-open me-1"></i>
+                    Registered court cases
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Cases -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-2 small fw-semibold">
+                            ACTIVE CASES
+                        </p>
+                        <h2 class="fw-bold text-dark mb-0">
+                            @ViewBag.OpenCases
+                        </h2>
+                    </div>
+
+                </div>
+                <hr class="my-3">
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>
+                    Cases currently in progress
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Charges -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-2 small fw-semibold">
+                            TOTAL CHARGES
+                        </p>
+                        <h2 class="fw-bold text-dark mb-0">
+                            @ViewBag.TotalCharges
+                        </h2>
+                    </div>
+
+                </div>
+                <hr class="my-3">
+                <small class="text-muted">
+                    <i class="bi bi-journal-text me-1"></i>
+                    Recorded court charges
+                </small>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Dashboard Content -->
+<div class="row g-4">
+
+    <!-- Quick Actions -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+
+            <div class="card-header bg-dark text-white py-3 px-4">
+                <h5 class="fw-semibold mb-0">
+                    <i class="bi bi-lightning-charge me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <p class="text-muted small mb-3">
+                    Access frequently used court management functions.
+                </p>
+
+                <div class="d-grid gap-3">
+
+                    <a asp-controller="CourtCases"
+                       asp-action="Index"
+                       class="btn btn-outline-dark text-start py-2">
+                        <i class="bi bi-briefcase me-2"></i>
+                        View All Court Cases
+                        <i class="bi bi-arrow-right float-end mt-1"></i>
+                    </a>
+
+                    <a asp-controller="Defendants"
+                       asp-action="Create"
+                       class="btn btn-outline-dark text-start py-2">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Register Defendant
+                        <i class="bi bi-arrow-right float-end mt-1"></i>
+                    </a>
+
+                    <a asp-controller="Courts"
+                       asp-action="Index"
+                       class="btn btn-outline-dark text-start py-2">
+                        <i class="bi bi-bank me-2"></i>
+                        Manage Courts
+                        <i class="bi bi-arrow-right float-end mt-1"></i>
+                    </a>
+
+                    <a asp-controller="Judges"
+                       asp-action="Index"
+                       class="btn btn-outline-dark text-start py-2">
+                        <i class="bi bi-person-badge me-2"></i>
+                        Manage Judges
+                        <i class="bi bi-arrow-right float-end mt-1"></i>
+                    </a>
+
+                    <a asp-controller="Prosecutors"
+                       asp-action="Index"
+                       class="btn btn-outline-dark text-start py-2">
+                        <i class="bi bi-person-check me-2"></i>
+                        Manage Prosecutors
+                        <i class="bi bi-arrow-right float-end mt-1"></i>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+
+            <div class="card-header bg-dark text-white py-3 px-4">
+                <h5 class="fw-semibold mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    System Overview
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <div class="d-flex align-items-start mb-4">
+         
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Court Management</h6>
+                        <p class="text-muted small mb-0">
+                            Manage court information, locations and registered courts.
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex align-items-start mb-4">
+    
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Personnel Management</h6>
+                        <p class="text-muted small mb-0">
+                            Maintain judge, prosecutor and defendant records.
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex align-items-start mb-4">
+             
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Case Management</h6>
+                        <p class="text-muted small mb-0">
+                            Manage original cases, court cases and associated charges.
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex align-items-start">
+
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Centralised Records</h6>
+                        <p class="text-muted small mb-0">
+                            Access and maintain court management information in one place.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-footer bg-white border-top p-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Court Case Management System
+                </small>
+            </div>
+
+        </div>
+    </div>
+
+</div>

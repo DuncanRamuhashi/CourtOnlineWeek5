@@ -1,0 +1,231 @@
+
+@{
+    ViewData["Title"] = "Create Court Case";
+    var originalCase = ViewBag.OriginalCase;
+}
+
+<div class="mb-4">
+    <a asp-action="Manage"
+       asp-route-originalCaseId="@originalCase.Id"
+       class="btn btn-outline-dark btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to Court Case
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-header bg-dark text-white p-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-folder-plus fs-3 me-3"></i>
+            <div>
+                <h4 class="mb-1">Create Court Case</h4>
+                <small class="text-white-50">
+                    Register and configure a new court proceeding
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4">
+
+        <!-- Original Case Information -->
+        <h6 class="text-uppercase fw-bold text-secondary mb-3">
+            <i class="bi bi-folder2-open me-2"></i>
+            Original Case Information
+        </h6>
+
+        <div class="bg-light border-start border-4 border-dark rounded-2 p-3 mb-4">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <small class="text-muted d-block">Original Case</small>
+                    <strong>@originalCase.Name</strong>
+                </div>
+
+                <div class="col-md-6">
+                    <small class="text-muted d-block">Case Number</small>
+                    <span class="fw-semibold">
+                        @originalCase.CaseNumber
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <form asp-action="Create" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="OriginalCaseId"
+                   value="@originalCase.Id" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger mb-3"></div>
+
+            <!-- Court Case Details -->
+            <h6 class="text-uppercase fw-bold text-secondary mb-3">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Court Case Details
+            </h6>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">
+                        Court Case Number
+                    </label>
+                    <input name="CaseNumber"
+                           class="form-control"
+                           value="@originalCase.CaseNumber"
+                           placeholder="Enter court case number" />
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Case Status</label>
+                    <select name="Status" class="form-select">
+                        <option value="Open">Open</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Adjourned">Adjourned</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Court Assignment -->
+            <h6 class="text-uppercase fw-bold text-secondary mb-3">
+                <i class="bi bi-building me-2"></i>
+                Court and Legal Representatives
+            </h6>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Court</label>
+                    <select name="CourtId" class="form-select">
+                        <option value="">Select Court</option>
+                        @foreach (var court in ViewBag.Courts)
+                        {
+                            <option value="@court.Id">@court.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Judge</label>
+                    <select name="JudgeId" class="form-select">
+                        <option value="">Select Judge</option>
+                        @foreach (var judge in ViewBag.Judges)
+                        {
+                            <option value="@judge.Id">
+                                @judge.Name (@(judge.Title ?? "—"))
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Prosecutor</label>
+                    <select name="ProsecutorId" class="form-select">
+                        <option value="">Select Prosecutor</option>
+                        @foreach (var prosecutor in ViewBag.Prosecutors)
+                        {
+                            <option value="@prosecutor.Id">
+                                @prosecutor.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Scheduling -->
+            <h6 class="text-uppercase fw-bold text-secondary mb-3">
+                <i class="bi bi-calendar-event me-2"></i>
+                Case Scheduling
+            </h6>
+
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Filing Date</label>
+                    <input type="date" name="FilingDate"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Next Hearing</label>
+                    <input type="datetime-local"
+                           name="NextHearingDate"
+                           class="form-control" />
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-check mt-md-4 pt-md-2">
+                        <input type="checkbox"
+                               name="IsConfidential"
+                               value="true"
+                               class="form-check-input"
+                               id="IsConfidential" />
+
+                        <label class="form-check-label fw-semibold"
+                               for="IsConfidential">
+                            Confidential Case
+                        </label>
+
+                        <div class="form-text">
+                            Mark this case as confidential.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Additional Notes -->
+            <h6 class="text-uppercase fw-bold text-secondary mb-3">
+                <i class="bi bi-card-text me-2"></i>
+                Additional Information
+            </h6>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Case Notes</label>
+                <textarea name="Notes"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Enter any additional case information..."></textarea>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Actions -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                <small class="text-muted">
+                    <i class="bi bi-shield-check me-1"></i>
+                    Verify all case information before submitting.
+                </small>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-dark px-4">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Create Court Case
+                    </button>
+
+                    <a asp-action="Manage"
+                       asp-route-originalCaseId="@originalCase.Id"
+                       class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
