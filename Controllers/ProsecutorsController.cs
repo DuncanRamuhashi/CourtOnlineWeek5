@@ -57,7 +57,8 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Prosecutor prosecutor)
         {
-            try {
+            try
+            {
                 if (await Database.Prosecutors.AnyAsync(p => p.Id == prosecutor.Id))
                 {
                     ModelState.AddModelError("Id", "This Prosecutor ID already exists.");
@@ -72,14 +73,14 @@ namespace CourtOnlineWeek5.Controllers
                 }
                 return View(prosecutor);
             }
-            
+
             catch (Exception ex)
             {
                 Console.WriteLine($"Error occurred: {ex.Message}");
                 return StatusCode(500, "An error occurred while processing your request.");
             }
 
-
+        }
         public async Task<IActionResult> Edit(string id)
         {
             try {
