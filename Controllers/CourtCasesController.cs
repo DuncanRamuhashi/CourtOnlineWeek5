@@ -14,73 +14,104 @@ namespace CourtOnlineWeek5.Controllers
         // GET: CourtCases (list all)
         public async Task<IActionResult> Index()
         {
-            ViewBag.CourtCases = await Database.CourtCases
-                .Include(c => c.OriginalCase)
-                .Include(c => c.Court)
-                .Include(c => c.Judge)
-                .Include(c => c.Prosecutor)
-                .AsNoTracking()
-                .OrderByDescending(c => c.CreatedAt)
-                .ToListAsync();
+            try {
+                ViewBag.CourtCases = await Database.CourtCases
+    .Include(c => c.OriginalCase)
+    .Include(c => c.Court)
+    .Include(c => c.Judge)
+    .Include(c => c.Prosecutor)
+    .AsNoTracking()
+    .OrderByDescending(c => c.CreatedAt)
+    .ToListAsync();
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
+            }
+
         }
 
         // GET: CourtCases/Manage?originalCaseId=5
         public async Task<IActionResult> Manage(int originalCaseId)
         {
-            ViewBag.OriginalCase = await Database.OriginalCases
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == originalCaseId);
 
-            if (ViewBag.OriginalCase == null)
-                return NotFound();
+            try {
+                ViewBag.OriginalCase = await Database.OriginalCases
+               .AsNoTracking()
+               .FirstOrDefaultAsync(c => c.Id == originalCaseId);
 
-            ViewBag.CourtCase = await Database.CourtCases
-                .Include(c => c.Court)
-                .Include(c => c.Judge)
-                .Include(c => c.Prosecutor)
-                .Include(c => c.Charges)
-                .Include(c => c.CourtCaseDefendants)
-                    .ThenInclude(cd => cd.Defendant)
-                .FirstOrDefaultAsync(c => c.OriginalCaseId == originalCaseId);
+                if (ViewBag.OriginalCase == null)
+                    return NotFound();
 
-            ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
-            ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
-            ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+                ViewBag.CourtCase = await Database.CourtCases
+                    .Include(c => c.Court)
+                    .Include(c => c.Judge)
+                    .Include(c => c.Prosecutor)
+                    .Include(c => c.Charges)
+                    .Include(c => c.CourtCaseDefendants)
+                        .ThenInclude(cd => cd.Defendant)
+                    .FirstOrDefaultAsync(c => c.OriginalCaseId == originalCaseId);
 
-            if (ViewBag.CourtCase != null)
-            {
-                ViewBag.Charges = ViewBag.CourtCase.Charges;
-                ViewBag.Defendants = ViewBag.CourtCase.CourtCaseDefendants;
+                ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
+                ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
+                ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+
+                if (ViewBag.CourtCase != null)
+                {
+                    ViewBag.Charges = ViewBag.CourtCase.Charges;
+                    ViewBag.Defendants = ViewBag.CourtCase.CourtCaseDefendants;
+                }
+                else
+                {
+                    ViewBag.Charges = new List<Charge>();
+                    ViewBag.Defendants = new List<CourtCaseDefendant>();
+                }
+
+                return View();
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.Charges = new List<Charge>();
-                ViewBag.Defendants = new List<CourtCaseDefendant>();
-            }
 
-            return View();
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
+            }
+           
         }
 
         // GET: CourtCases/Create?originalCaseId=5
         public async Task<IActionResult> Create(int originalCaseId)
         {
-            var originalCase = await Database.OriginalCases.FindAsync(originalCaseId);
-            if (originalCase == null)
-                return NotFound();
-
-            if (await Database.CourtCases.AnyAsync(c => c.OriginalCaseId == originalCaseId))
+            try
             {
-                return RedirectToAction(nameof(Manage), new { originalCaseId });
+                var originalCase = await Database.OriginalCases.FindAsync(originalCaseId);
+                if (originalCase == null)
+                    return NotFound();
+
+                if (await Database.CourtCases.AnyAsync(c => c.OriginalCaseId == originalCaseId))
+                {
+                    return RedirectToAction(nameof(Manage), new { originalCaseId });
+                }
+
+                ViewBag.OriginalCase = originalCase;
+                ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
+                ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
+                ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+
+                return View();
             }
+            catch(Exception ex) {
 
-            ViewBag.OriginalCase = originalCase;
-            ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
-            ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
-            ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
 
-            return View();
+            }
+          
         }
 
         // POST: CourtCases/Create
@@ -88,44 +119,64 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CourtCase courtCase)
         {
-            var originalCase = await Database.OriginalCases.FindAsync(courtCase.OriginalCaseId);
-            if (originalCase == null)
-                return NotFound();
 
-            if (await Database.CourtCases.AnyAsync(c => c.OriginalCaseId == courtCase.OriginalCaseId))
+            try
             {
-                ModelState.AddModelError("", "A court case already exists for this original case.");
+                var originalCase = await Database.OriginalCases.FindAsync(courtCase.OriginalCaseId);
+                if (originalCase == null)
+                    return NotFound();
+
+                if (await Database.CourtCases.AnyAsync(c => c.OriginalCaseId == courtCase.OriginalCaseId))
+                {
+                    ModelState.AddModelError("", "A court case already exists for this original case.");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    courtCase.CreatedAt = DateTime.UtcNow;
+                    Database.CourtCases.Add(courtCase);
+                    await Database.SaveChangesAsync();
+                    TempData["Success"] = "Court case created successfully.";
+                    return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase.OriginalCaseId });
+                }
+
+                ViewBag.OriginalCase = originalCase;
+                ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
+                ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
+                ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+                return View(courtCase);
+            }
+            catch(Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
             }
 
-            if (ModelState.IsValid)
-            {
-                courtCase.CreatedAt = DateTime.UtcNow;
-                Database.CourtCases.Add(courtCase);
-                await Database.SaveChangesAsync();
-                TempData["Success"] = "Court case created successfully.";
-                return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase.OriginalCaseId });
-            }
-
-            ViewBag.OriginalCase = originalCase;
-            ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
-            ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
-            ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
-            return View(courtCase);
         }
 
         // GET: CourtCases/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var courtCase = await Database.CourtCases.FindAsync(id);
-            if (courtCase == null)
-                return NotFound();
 
-            ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
-            ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
-            ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
-            ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+            try
+            {
+                var courtCase = await Database.CourtCases.FindAsync(id);
+                if (courtCase == null)
+                    return NotFound();
 
-            return View(courtCase);
+                ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
+                ViewBag.Judges = await Database.Judges.Where(j => j.IsActive).ToListAsync();
+                ViewBag.Prosecutors = await Database.Prosecutors.Where(p => p.IsActive).ToListAsync();
+                ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+
+                return View(courtCase);
+            }
+            catch (Exception ex){
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
+            }
+
         }
 
         // POST: CourtCases/Edit/5
@@ -134,80 +185,99 @@ namespace CourtOnlineWeek5.Controllers
       
         public async Task<IActionResult> Edit(int id, CourtCase courtCase)
         {
-            if (id != courtCase.Id)
-                return BadRequest();
 
-            // Remove navigation properties from validation.
-            ModelState.Remove(nameof(CourtCase.Court));
-            ModelState.Remove(nameof(CourtCase.Judge));
-            ModelState.Remove(nameof(CourtCase.Prosecutor));
-            ModelState.Remove(nameof(CourtCase.OriginalCase));
-
-            if (!ModelState.IsValid)
+            try
             {
-                await LoadEditDropdowns();
+                if (id != courtCase.Id)
+                    return BadRequest();
 
-                ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+                // Remove navigation properties from validation.
+                ModelState.Remove(nameof(CourtCase.Court));
+                ModelState.Remove(nameof(CourtCase.Judge));
+                ModelState.Remove(nameof(CourtCase.Prosecutor));
+                ModelState.Remove(nameof(CourtCase.OriginalCase));
 
-                return View(courtCase);
+                if (!ModelState.IsValid)
+                {
+                    await LoadEditDropdowns();
+
+                    ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+
+                    return View(courtCase);
+                }
+
+                var existing = await Database.CourtCases.FindAsync(id);
+
+                if (existing == null)
+                    return NotFound();
+
+                // Check that the selected court exists.
+                var courtExists = await Database.Courts
+                    .AnyAsync(c => c.Id == courtCase.CourtId && c.IsActive);
+
+                if (!courtExists)
+                {
+                    ModelState.AddModelError(
+                        nameof(courtCase.CourtId),
+                        "Please select a valid active court.");
+
+                    await LoadEditDropdowns();
+                    ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+
+                    return View(courtCase);
+                }
+
+                existing.Status = courtCase.Status;
+                existing.CourtId = courtCase.CourtId;
+                existing.JudgeId = courtCase.JudgeId;
+                existing.ProsecutorId = courtCase.ProsecutorId;
+                existing.CaseNumber = courtCase.CaseNumber;
+                existing.FilingDate = courtCase.FilingDate;
+                existing.NextHearingDate = courtCase.NextHearingDate;
+                existing.ClosedDate = courtCase.ClosedDate;
+                existing.Outcome = courtCase.Outcome;
+                existing.Notes = courtCase.Notes;
+                existing.IsConfidential = courtCase.IsConfidential;
+                existing.UpdatedAt = DateTime.UtcNow;
+
+                await Database.SaveChangesAsync();
+
+                TempData["Success"] = "Court case updated successfully.";
+
+                return RedirectToAction(
+                    nameof(Manage),
+                    new { originalCaseId = existing.OriginalCaseId });
             }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
 
-            var existing = await Database.CourtCases.FindAsync(id);
-
-            if (existing == null)
-                return NotFound();
-
-            // Check that the selected court exists.
-            var courtExists = await Database.Courts
-                .AnyAsync(c => c.Id == courtCase.CourtId && c.IsActive);
-
-            if (!courtExists)
-            {
-                ModelState.AddModelError(
-                    nameof(courtCase.CourtId),
-                    "Please select a valid active court.");
-
-                await LoadEditDropdowns();
-                ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
-
-                return View(courtCase);
             }
-
-            existing.Status = courtCase.Status;
-            existing.CourtId = courtCase.CourtId;
-            existing.JudgeId = courtCase.JudgeId;
-            existing.ProsecutorId = courtCase.ProsecutorId;
-            existing.CaseNumber = courtCase.CaseNumber;
-            existing.FilingDate = courtCase.FilingDate;
-            existing.NextHearingDate = courtCase.NextHearingDate;
-            existing.ClosedDate = courtCase.ClosedDate;
-            existing.Outcome = courtCase.Outcome;
-            existing.Notes = courtCase.Notes;
-            existing.IsConfidential = courtCase.IsConfidential;
-            existing.UpdatedAt = DateTime.UtcNow;
-
-            await Database.SaveChangesAsync();
-
-            TempData["Success"] = "Court case updated successfully.";
-
-            return RedirectToAction(
-                nameof(Manage),
-                new { originalCaseId = existing.OriginalCaseId });
+          
         }
         // GET: CourtCases/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            ViewBag.CourtCase = await Database.CourtCases
-                .Include(c => c.OriginalCase)
-                .Include(c => c.Court)
-                .Include(c => c.Charges)
-                .Include(c => c.CourtCaseDefendants)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            try
+            {
+                ViewBag.CourtCase = await Database.CourtCases
+    .Include(c => c.OriginalCase)
+    .Include(c => c.Court)
+    .Include(c => c.Charges)
+    .Include(c => c.CourtCaseDefendants)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (ViewBag.CourtCase == null)
-                return NotFound();
+                if (ViewBag.CourtCase == null)
+                    return NotFound();
 
-            return View();
+                return View();
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
+            }
+
         }
 
         // POST: CourtCases/Delete/5
@@ -215,38 +285,56 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var courtCase = await Database.CourtCases.FindAsync(id);
-            if (courtCase == null)
-                return NotFound();
 
-            var originalCaseId = courtCase.OriginalCaseId;
-            Database.CourtCases.Remove(courtCase);
-            await Database.SaveChangesAsync();
-            TempData["Success"] = "Court case deleted successfully.";
-            return RedirectToAction(nameof(Manage), new { originalCaseId });
+            try
+            {
+                var courtCase = await Database.CourtCases.FindAsync(id);
+                if (courtCase == null)
+                    return NotFound();
+
+                var originalCaseId = courtCase.OriginalCaseId;
+                Database.CourtCases.Remove(courtCase);
+                await Database.SaveChangesAsync();
+                TempData["Success"] = "Court case deleted successfully.";
+                return RedirectToAction(nameof(Manage), new { originalCaseId });
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
+            }
+
         }
 
         // GET: CourtCases/AddDefendant?courtCaseId=5
         public async Task<IActionResult> AddDefendant(int courtCaseId)
         {
-            var courtCase = await Database.CourtCases
-                .Include(c => c.CourtCaseDefendants)
-                .FirstOrDefaultAsync(c => c.Id == courtCaseId);
 
-            if (courtCase == null)
-                return NotFound();
+            try
+            {
+                var courtCase = await Database.CourtCases
+    .Include(c => c.CourtCaseDefendants)
+    .FirstOrDefaultAsync(c => c.Id == courtCaseId);
 
-            var existingIds = courtCase.CourtCaseDefendants.Select(cd => cd.DefendantId).ToList();
+                if (courtCase == null)
+                    return NotFound();
 
-            ViewBag.AvailableDefendants = await Database.Defendants
-                .Where(d => !existingIds.Contains(d.Id))
-                .OrderBy(d => d.Name)
-                .ToListAsync();
+                var existingIds = courtCase.CourtCaseDefendants.Select(cd => cd.DefendantId).ToList();
 
-            ViewBag.CourtCaseId = courtCaseId;
-            ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+                ViewBag.AvailableDefendants = await Database.Defendants
+                    .Where(d => !existingIds.Contains(d.Id))
+                    .OrderBy(d => d.Name)
+                    .ToListAsync();
 
-            return View();
+                ViewBag.CourtCaseId = courtCaseId;
+                ViewBag.OriginalCaseId = courtCase.OriginalCaseId;
+
+                return View();
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
         }
 
         // POST: CourtCases/AddDefendant
@@ -254,32 +342,42 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddDefendant(int courtCaseId, string defendantId, string role, bool isPrimary)
         {
-            var courtCase = await Database.CourtCases.FindAsync(courtCaseId);
-            if (courtCase == null)
-                return NotFound();
 
-            var defendant = await Database.Defendants.FindAsync(defendantId);
-            if (defendant == null)
-                return NotFound();
-
-            if (await Database.CourtCaseDefendants.AnyAsync(cd => cd.CourtCaseId == courtCaseId && cd.DefendantId == defendantId))
+            try
             {
-                TempData["Error"] = "This defendant is already assigned to this case.";
-                return RedirectToAction(nameof(AddDefendant), new { courtCaseId });
+                var courtCase = await Database.CourtCases.FindAsync(courtCaseId);
+                if (courtCase == null)
+                    return NotFound();
+
+                var defendant = await Database.Defendants.FindAsync(defendantId);
+                if (defendant == null)
+                    return NotFound();
+
+                if (await Database.CourtCaseDefendants.AnyAsync(cd => cd.CourtCaseId == courtCaseId && cd.DefendantId == defendantId))
+                {
+                    TempData["Error"] = "This defendant is already assigned to this case.";
+                    return RedirectToAction(nameof(AddDefendant), new { courtCaseId });
+                }
+
+                var relationship = new CourtCaseDefendant
+                {
+                    CourtCaseId = courtCaseId,
+                    DefendantId = defendantId,
+                    Role = string.IsNullOrWhiteSpace(role) ? "Accused" : role,
+                    IsPrimary = isPrimary
+                };
+
+                Database.CourtCaseDefendants.Add(relationship);
+                await Database.SaveChangesAsync();
+                TempData["Success"] = "Defendant added to court case successfully.";
+                return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase.OriginalCaseId });
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+
             }
 
-            var relationship = new CourtCaseDefendant
-            {
-                CourtCaseId = courtCaseId,
-                DefendantId = defendantId,
-                Role = string.IsNullOrWhiteSpace(role) ? "Accused" : role,
-                IsPrimary = isPrimary
-            };
-
-            Database.CourtCaseDefendants.Add(relationship);
-            await Database.SaveChangesAsync();
-            TempData["Success"] = "Defendant added to court case successfully.";
-            return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase.OriginalCaseId });
         }
 
         // POST: CourtCases/RemoveDefendant
@@ -287,18 +385,27 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveDefendant(int courtCaseId, string defendantId)
         {
-            var relationship = await Database.CourtCaseDefendants
-                .FirstOrDefaultAsync(cd => cd.CourtCaseId == courtCaseId && cd.DefendantId == defendantId);
 
-            if (relationship == null)
-                return NotFound();
+            try
+            {
+                var relationship = await Database.CourtCaseDefendants
+    .FirstOrDefaultAsync(cd => cd.CourtCaseId == courtCaseId && cd.DefendantId == defendantId);
 
-            var courtCase = await Database.CourtCases.FindAsync(courtCaseId);
-            Database.CourtCaseDefendants.Remove(relationship);
-            await Database.SaveChangesAsync();
+                if (relationship == null)
+                    return NotFound();
 
-            TempData["Success"] = "Defendant removed from court case (defendant record preserved).";
-            return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase!.OriginalCaseId });
+                var courtCase = await Database.CourtCases.FindAsync(courtCaseId);
+                Database.CourtCaseDefendants.Remove(relationship);
+                await Database.SaveChangesAsync();
+
+                TempData["Success"] = "Defendant removed from court case (defendant record preserved).";
+                return RedirectToAction(nameof(Manage), new { originalCaseId = courtCase!.OriginalCaseId });
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
         private async Task LoadEditDropdowns()
         {

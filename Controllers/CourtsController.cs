@@ -13,24 +13,40 @@ namespace CourtOnlineWeek5.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Courts = await Database.Courts
-                .AsNoTracking()
-                .OrderBy(c => c.Name)
-                .ToListAsync();
-            return View();
+            try {
+                ViewBag.Courts = await Database.Courts
+    .AsNoTracking()
+    .OrderBy(c => c.Name)
+    .ToListAsync();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         public async Task<IActionResult> Details(int id)
         {
-            ViewBag.Court = await Database.Courts
-                .Include(c => c.Judges)
-                .Include(c => c.CourtCases)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            try
+            {
+                ViewBag.Court = await Database.Courts
+    .Include(c => c.Judges)
+    .Include(c => c.CourtCases)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (ViewBag.Court == null)
-                return NotFound();
+                if (ViewBag.Court == null)
+                    return NotFound();
 
-            return View();
+                return View();
+            }
+            catch(Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         public IActionResult Create()
@@ -42,90 +58,138 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Court court)
         {
-            if (ModelState.IsValid)
+            try
             {
-                court.CreatedAt = DateTime.UtcNow;
-                Database.Courts.Add(court);
-                await Database.SaveChangesAsync();
-                TempData["Success"] = "Court created successfully.";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    court.CreatedAt = DateTime.UtcNow;
+                    Database.Courts.Add(court);
+                    await Database.SaveChangesAsync();
+                    TempData["Success"] = "Court created successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(court);
             }
-            return View(court);
+            catch (Exception ex) {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            var court = await Database.Courts.FindAsync(id);
-            if (court == null)
-                return NotFound();
-            return View(court);
+            try {
+                var court = await Database.Courts.FindAsync(id);
+                if (court == null)
+                    return NotFound();
+                return View(court);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Court court)
         {
-            if (id != court.Id)
-                return BadRequest();
 
-            if (ModelState.IsValid)
-            {
-                var existing = await Database.Courts.FindAsync(id);
-                if (existing == null)
-                    return NotFound();
+            try {
+                if (id != court.Id)
+                    return BadRequest();
 
-                existing.Name = court.Name;
-                existing.Location = court.Location;
-                existing.CourtCode = court.CourtCode;
-                existing.CourtLevel = court.CourtLevel;
-                existing.Province = court.Province;
-                existing.Phone = court.Phone;
-                existing.Email = court.Email;
-                existing.Address = court.Address;
-                existing.IsActive = court.IsActive;
+                if (ModelState.IsValid)
+                {
+                    var existing = await Database.Courts.FindAsync(id);
+                    if (existing == null)
+                        return NotFound();
 
-                await Database.SaveChangesAsync();
-                TempData["Success"] = "Court updated successfully.";
-                return RedirectToAction(nameof(Index));
+                    existing.Name = court.Name;
+                    existing.Location = court.Location;
+                    existing.CourtCode = court.CourtCode;
+                    existing.CourtLevel = court.CourtLevel;
+                    existing.Province = court.Province;
+                    existing.Phone = court.Phone;
+                    existing.Email = court.Email;
+                    existing.Address = court.Address;
+                    existing.IsActive = court.IsActive;
+
+                    await Database.SaveChangesAsync();
+                    TempData["Success"] = "Court updated successfully.";
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(court);
             }
-            return View(court);
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+        
         }
 
         public async Task<IActionResult> Delete(int id)
         {
-            ViewBag.Court = await Database.Courts
-                .Include(c => c.Judges)
-                .Include(c => c.CourtCases)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            try
+            {
 
-            if (ViewBag.Court == null)
-                return NotFound();
+                ViewBag.Court = await Database.Courts
+    .Include(c => c.Judges)
+    .Include(c => c.CourtCases)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            return View();
+                if (ViewBag.Court == null)
+                    return NotFound();
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var court = await Database.Courts
-                .Include(c => c.Judges)
-                .Include(c => c.CourtCases)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (court == null)
-                return NotFound();
-
-            if (court.Judges.Any() || court.CourtCases.Any())
+            try
             {
-                TempData["Error"] = "Cannot delete a court that has assigned judges or court cases. Deactivate it instead.";
+                var court = await Database.Courts
+             .Include(c => c.Judges)
+             .Include(c => c.CourtCases)
+             .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (court == null)
+                    return NotFound();
+
+                if (court.Judges.Any() || court.CourtCases.Any())
+                {
+                    TempData["Error"] = "Cannot delete a court that has assigned judges or court cases. Deactivate it instead.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                Database.Courts.Remove(court);
+                await Database.SaveChangesAsync();
+                TempData["Success"] = "Court deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }
+            catch (Exception ex)
+            {
 
-            Database.Courts.Remove(court);
-            await Database.SaveChangesAsync();
-            TempData["Success"] = "Court deleted successfully.";
-            return RedirectToAction(nameof(Index));
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
+         
         }
     }
 }

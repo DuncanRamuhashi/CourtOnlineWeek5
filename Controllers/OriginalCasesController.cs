@@ -17,27 +17,43 @@ namespace CourtOnlineWeek5.Controllers
         // GET: OriginalCases
         public async Task<IActionResult> Index()
         {
-            ViewBag.OriginalCases = await Database.OriginalCases
-                .OrderByDescending(c => c.Date)
-                .ToListAsync();
+            try {
+                ViewBag.OriginalCases = await Database.OriginalCases
+    .OrderByDescending(c => c.Date)
+    .ToListAsync();
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         // GET: OriginalCases/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            ViewBag.OriginalCase = await Database.OriginalCases
-                .Include(c => c.CourtCases)
-                    .ThenInclude(cc => cc.Court)
-                .Include(c => c.CourtCases)
-                    .ThenInclude(cc => cc.Judge)
-                .FirstOrDefaultAsync(c => c.Id == id);
+            try {
+                ViewBag.OriginalCase = await Database.OriginalCases
+    .Include(c => c.CourtCases)
+        .ThenInclude(cc => cc.Court)
+    .Include(c => c.CourtCases)
+        .ThenInclude(cc => cc.Judge)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (ViewBag.OriginalCase == null)
-                return NotFound();
+                if (ViewBag.OriginalCase == null)
+                    return NotFound();
 
-            return View();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         // GET: OriginalCases/Create
@@ -51,36 +67,52 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OriginalCase originalCase)
         {
-            if (!ModelState.IsValid)
-                return View(originalCase);
+            try {
+                if (!ModelState.IsValid)
+                    return View(originalCase);
 
-            if (await Database.OriginalCases.AnyAsync(
-                c => c.CaseNumber == originalCase.CaseNumber))
+                if (await Database.OriginalCases.AnyAsync(
+                    c => c.CaseNumber == originalCase.CaseNumber))
+                {
+                    ModelState.AddModelError(
+                        "CaseNumber",
+                        "This case number already exists.");
+
+                    return View(originalCase);
+                }
+
+                Database.OriginalCases.Add(originalCase);
+                await Database.SaveChangesAsync();
+
+                TempData["Success"] = "Original case registered successfully.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
             {
-                ModelState.AddModelError(
-                    "CaseNumber",
-                    "This case number already exists.");
-
-                return View(originalCase);
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
 
-            Database.OriginalCases.Add(originalCase);
-            await Database.SaveChangesAsync();
-
-            TempData["Success"] = "Original case registered successfully.";
-
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: OriginalCases/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            var originalCase = await Database.OriginalCases.FindAsync(id);
+            try {
+                var originalCase = await Database.OriginalCases.FindAsync(id);
 
-            if (originalCase == null)
-                return NotFound();
+                if (originalCase == null)
+                    return NotFound();
 
-            return View(originalCase);
+                return View(originalCase);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         // POST: OriginalCases/Edit/5
@@ -88,53 +120,71 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, OriginalCase originalCase)
         {
-            if (id != originalCase.Id)
-                return BadRequest();
 
-            if (!ModelState.IsValid)
-                return View(originalCase);
+            try {
+                if (id != originalCase.Id)
+                    return BadRequest();
 
-            var existing = await Database.OriginalCases.FindAsync(id);
+                if (!ModelState.IsValid)
+                    return View(originalCase);
 
-            if (existing == null)
-                return NotFound();
+                var existing = await Database.OriginalCases.FindAsync(id);
 
-            if (await Database.OriginalCases.AnyAsync(
-                c => c.CaseNumber == originalCase.CaseNumber && c.Id != id))
+                if (existing == null)
+                    return NotFound();
+
+                if (await Database.OriginalCases.AnyAsync(
+                    c => c.CaseNumber == originalCase.CaseNumber && c.Id != id))
+                {
+                    ModelState.AddModelError(
+                        "CaseNumber",
+                        "This case number already exists.");
+
+                    return View(originalCase);
+                }
+
+                existing.CaseNumber = originalCase.CaseNumber;
+                existing.Name = originalCase.Name;
+                existing.Date = originalCase.Date;
+                existing.Description = originalCase.Description;
+                existing.CaseType = originalCase.CaseType;
+                existing.Priority = originalCase.Priority;
+                existing.ReportedBy = originalCase.ReportedBy;
+
+                await Database.SaveChangesAsync();
+
+                TempData["Success"] = "Original case updated successfully.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
             {
-                ModelState.AddModelError(
-                    "CaseNumber",
-                    "This case number already exists.");
-
-                return View(originalCase);
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
             }
 
-            existing.CaseNumber = originalCase.CaseNumber;
-            existing.Name = originalCase.Name;
-            existing.Date = originalCase.Date;
-            existing.Description = originalCase.Description;
-            existing.CaseType = originalCase.CaseType;
-            existing.Priority = originalCase.Priority;
-            existing.ReportedBy = originalCase.ReportedBy;
-
-            await Database.SaveChangesAsync();
-
-            TempData["Success"] = "Original case updated successfully.";
-
-            return RedirectToAction(nameof(Index));
         }
 
         // GET: OriginalCases/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
-            ViewBag.OriginalCase = await Database.OriginalCases
-                .Include(c => c.CourtCases)
-                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (ViewBag.OriginalCase == null)
-                return NotFound();
+            try {
+                ViewBag.OriginalCase = await Database.OriginalCases
+    .Include(c => c.CourtCases)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            return View();
+                if (ViewBag.OriginalCase == null)
+                    return NotFound();
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
+
         }
 
         // POST: OriginalCases/Delete/5
@@ -142,28 +192,37 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var originalCase = await Database.OriginalCases
-                .Include(c => c.CourtCases)
-                .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (originalCase == null)
-                return NotFound();
+            try {
+                var originalCase = await Database.OriginalCases
+    .Include(c => c.CourtCases)
+    .FirstOrDefaultAsync(c => c.Id == id);
 
-            if (originalCase.CourtCases.Any())
-            {
-                TempData["Error"] =
-                    "Cannot delete an original case that has associated court cases.";
+                if (originalCase == null)
+                    return NotFound();
+
+                if (originalCase.CourtCases.Any())
+                {
+                    TempData["Error"] =
+                        "Cannot delete an original case that has associated court cases.";
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                Database.OriginalCases.Remove(originalCase);
+
+                await Database.SaveChangesAsync();
+
+                TempData["Success"] = "Original case deleted successfully.";
 
                 return RedirectToAction(nameof(Index));
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing your request.");
+            }
 
-            Database.OriginalCases.Remove(originalCase);
-
-            await Database.SaveChangesAsync();
-
-            TempData["Success"] = "Original case deleted successfully.";
-
-            return RedirectToAction(nameof(Index));
         }
     }
 }
