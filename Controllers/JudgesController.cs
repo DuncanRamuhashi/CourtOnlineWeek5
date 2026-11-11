@@ -1,8 +1,9 @@
+using CourtOnlineWeek5.Data;
+using CourtOnlineWeek5.Generic;
+using CourtOnlineWeek5.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CourtOnlineWeek5.Data;
-using CourtOnlineWeek5.Models;
 
 namespace CourtOnlineWeek5.Controllers
 {
@@ -13,25 +14,22 @@ namespace CourtOnlineWeek5.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.Judges = await Database.Judges
     .Include(j => j.Court)
     .AsNoTracking()
     .OrderBy(j => j.Name)
     .ToListAsync();
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
         public async Task<IActionResult> Details(string id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.Judge = await Database.Judges
     .Include(j => j.Court)
     .Include(j => j.CourtCases)
@@ -41,26 +39,17 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
         public async Task<IActionResult> Create()
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -69,8 +58,9 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Create(Judge judge)
         {
 
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
+
                 if (await Database.Judges.AnyAsync(j => j.Id == judge.Id))
                 {
                     ModelState.AddModelError("Id", "This Judge ID already exists.");
@@ -86,31 +76,22 @@ namespace CourtOnlineWeek5.Controllers
 
                 ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
                 return View(judge);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
 
         }
 
         public async Task<IActionResult> Edit(string id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 var judge = await Database.Judges.FindAsync(id);
                 if (judge == null)
                     return NotFound();
 
                 ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
                 return View(judge);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -119,7 +100,8 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Edit(string id, Judge judge)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 if (id != judge.Id)
                     return BadRequest();
 
@@ -144,18 +126,14 @@ namespace CourtOnlineWeek5.Controllers
 
                 ViewBag.Courts = await Database.Courts.Where(c => c.IsActive).ToListAsync();
                 return View(judge);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
         public async Task<IActionResult> Delete(string id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.Judge = await Database.Judges
     .Include(j => j.Court)
     .Include(j => j.CourtCases)
@@ -165,20 +143,15 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-
+            });
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 var judge = await Database.Judges
     .Include(j => j.CourtCases)
     .FirstOrDefaultAsync(j => j.Id == id);
@@ -196,12 +169,7 @@ namespace CourtOnlineWeek5.Controllers
                 await Database.SaveChangesAsync();
                 TempData["Success"] = "Judge deleted successfully.";
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
     }

@@ -1,9 +1,10 @@
 
+using CourtOnlineWeek5.Data;
+using CourtOnlineWeek5.Generic;
+using CourtOnlineWeek5.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using CourtOnlineWeek5.Data;
-using CourtOnlineWeek5.Models;
 
 namespace CourtOnlineWeek5.Controllers
 {
@@ -51,7 +52,8 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Details(int id)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 var charge = await Database.Charges
         .AsNoTracking()
         .Include(c => c.CourtCase)
@@ -62,13 +64,8 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View(charge);
-            }
-            catch (Exception ex)
-            {
-             
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
+          
 
         }
 
@@ -76,7 +73,8 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Create(int courtCaseId)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 if (courtCaseId <= 0)
                     return BadRequest("Invalid court case ID.");
 
@@ -93,12 +91,7 @@ namespace CourtOnlineWeek5.Controllers
                 {
                     CourtCaseId = courtCase.Id
                 });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -108,8 +101,9 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Create(Charge charge)
         {
 
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
+
                 ModelState.Remove(nameof(charge.CourtCase));
 
                 if (string.IsNullOrWhiteSpace(charge.Name))
@@ -149,19 +143,15 @@ namespace CourtOnlineWeek5.Controllers
                 ViewBag.CourtCase = courtCase;
 
                 return View(charge);
-            }
-            catch (Exception ex) {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-            
+            });
+
         }
 
         // GET: Charges/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
 
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
                 var charge = await Database.Charges
               .AsNoTracking()
@@ -172,12 +162,8 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View(charge);
-            }
-            catch (Exception ex) {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
-          
+            });
+
         }
 
         // POST: Charges/Edit/5
@@ -187,8 +173,9 @@ namespace CourtOnlineWeek5.Controllers
         {
 
 
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
+
                 if (id != charge.Id)
                     return BadRequest();
 
@@ -241,20 +228,17 @@ namespace CourtOnlineWeek5.Controllers
                 charge.CourtCase = courtCase;
 
                 return View(charge);
-            }
-            catch(Exception ex) {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
+            });
 
-            }
-           
         }
 
         // GET: Charges/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
+
                 var charge = await Database.Charges
                    .AsNoTracking()
                    .Include(c => c.CourtCase)
@@ -265,15 +249,8 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View(charge);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
+            });
 
-
-            }
-           
         }
 
         // POST: Charges/Delete/5
@@ -283,7 +260,7 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
                 var charge = await Database.Charges
     .FirstOrDefaultAsync(c => c.Id == id);
@@ -308,14 +285,7 @@ namespace CourtOnlineWeek5.Controllers
                     "Manage",
                     "CourtCases",
                     new { originalCaseId });
-            }
-            catch (Exception ex) {
-
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-
-            }
-
+            });
 
         }
     }

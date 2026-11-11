@@ -1,4 +1,5 @@
 ﻿using CourtOnlineWeek5.Data;
+using CourtOnlineWeek5.Generic;
 using CourtOnlineWeek5.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ namespace CourtOnlineWeek5.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try
+            return await ErrorHandler.ExecuteAsync(async () =>
             {
                 ViewBag.TotalOriginalCases = await Database.OriginalCases.CountAsync();
                 ViewBag.TotalCourtCases = await Database.CourtCases.CountAsync();
@@ -27,12 +28,7 @@ namespace CourtOnlineWeek5.Controllers
                     .ToListAsync();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 

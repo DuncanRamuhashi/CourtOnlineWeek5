@@ -1,5 +1,6 @@
 ﻿
 using CourtOnlineWeek5.Data;
+using CourtOnlineWeek5.Generic;
 using CourtOnlineWeek5.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,25 +18,23 @@ namespace CourtOnlineWeek5.Controllers
         // GET: OriginalCases
         public async Task<IActionResult> Index()
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.OriginalCases = await Database.OriginalCases
     .OrderByDescending(c => c.Date)
     .ToListAsync();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
         // GET: OriginalCases/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
+
                 ViewBag.OriginalCase = await Database.OriginalCases
     .Include(c => c.CourtCases)
         .ThenInclude(cc => cc.Court)
@@ -47,12 +46,7 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -67,7 +61,8 @@ namespace CourtOnlineWeek5.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OriginalCase originalCase)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 if (!ModelState.IsValid)
                     return View(originalCase);
 
@@ -87,31 +82,22 @@ namespace CourtOnlineWeek5.Controllers
                 TempData["Success"] = "Original case registered successfully.";
 
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
         // GET: OriginalCases/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 var originalCase = await Database.OriginalCases.FindAsync(id);
 
                 if (originalCase == null)
                     return NotFound();
 
                 return View(originalCase);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -121,7 +107,9 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Edit(int id, OriginalCase originalCase)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
+
                 if (id != originalCase.Id)
                     return BadRequest();
 
@@ -156,12 +144,7 @@ namespace CourtOnlineWeek5.Controllers
                 TempData["Success"] = "Original case updated successfully.";
 
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -169,7 +152,8 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> Delete(int id)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 ViewBag.OriginalCase = await Database.OriginalCases
     .Include(c => c.CourtCases)
     .FirstOrDefaultAsync(c => c.Id == id);
@@ -178,12 +162,7 @@ namespace CourtOnlineWeek5.Controllers
                     return NotFound();
 
                 return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
 
@@ -193,7 +172,8 @@ namespace CourtOnlineWeek5.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
-            try {
+            return await ErrorHandler.ExecuteAsync(async () =>
+            {
                 var originalCase = await Database.OriginalCases
     .Include(c => c.CourtCases)
     .FirstOrDefaultAsync(c => c.Id == id);
@@ -216,12 +196,7 @@ namespace CourtOnlineWeek5.Controllers
                 TempData["Success"] = "Original case deleted successfully.";
 
                 return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error occurred: {ex.Message}");
-                return StatusCode(500, "An error occurred while processing your request.");
-            }
+            });
 
         }
     }
