@@ -138,7 +138,7 @@ namespace CourtOnlineWeek5.Controllers
             return await ErrorHandler.ExecuteAsync(async () =>
             {
                 var prosecutor = await Database.Prosecutors
-                  .Include(p => p.CourtCases)
+                  .Include(p => p.CourtCases)                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
                   .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (prosecutor == null)

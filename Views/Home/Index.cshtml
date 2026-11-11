@@ -67,17 +67,19 @@
         </div>
     </div>
 
-    <!-- Total Charges -->
+
+
+    <!-- Total Judges -->
     <div class="col-md-4">
         <div class="card border-0 shadow-sm rounded-3 h-100">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="text-muted mb-2 small fw-semibold">
-                            TOTAL CHARGES
+                            Number of Judges 
                         </p>
                         <h2 class="fw-bold text-dark mb-0">
-                            @ViewBag.TotalCharges
+                            @ViewBag.TotalJudges
                         </h2>
                     </div>
 
@@ -85,12 +87,34 @@
                 <hr class="my-3">
                 <small class="text-muted">
                     <i class="bi bi-journal-text me-1"></i>
-                    Recorded court charges
+                    Recorded court Judges
                 </small>
             </div>
         </div>
     </div>
+    <!-- Total Procecutors -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-3 h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-2 small fw-semibold">
+                            Number of Procecutors
+                        </p>
+                        <h2 class="fw-bold text-dark mb-0">
+                            @ViewBag.TotalProcecutors
+                        </h2>
+                    </div>
 
+                </div>
+                <hr class="my-3">
+                <small class="text-muted">
+                    <i class="bi bi-journal-text me-1"></i>
+                    Recorded court Prosecutors
+                </small>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Dashboard Content -->

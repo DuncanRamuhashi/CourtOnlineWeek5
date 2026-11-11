@@ -19,6 +19,8 @@ namespace CourtOnlineWeek5.Controllers
                 ViewBag.OpenCases = await Database.CourtCases.CountAsync(c => c.Status == "Open" || c.Status == "In Progress" || c.Status == "Pending");
                 ViewBag.TotalDefendants = await Database.Defendants.CountAsync();
                 ViewBag.TotalCharges = await Database.Charges.CountAsync();
+                ViewBag.TotalJudges = await Database.Judges.CountAsync();
+                ViewBag.TotalProcecutors = await Database.Prosecutors.CountAsync();
                 ViewBag.UpcomingHearings = await Database.CourtCases
                     .Where(c => c.NextHearingDate != null && c.NextHearingDate >= DateTime.UtcNow)
                     .OrderBy(c => c.NextHearingDate)
